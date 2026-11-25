@@ -1,0 +1,176 @@
+/* ===== 색상 변수 (라이트 모드 기본값) ===== */
+:root {
+  --bg: #f2f2f7;
+  --display-text: #111111;
+  --expression-text: #6b6b70;
+  --key-bg: #ffffff;
+  --key-text: #111111;
+  --func-bg: #d4d4d9;
+  --func-text: #111111;
+  --op-bg: #ff9500;
+  --op-text: #ffffff;
+  --op-active-bg: #ffffff;
+  --op-active-text: #ff9500;
+  --error-text: #d70015;
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
+}
+
+/* ===== 다크 모드: 휴대폰/PC 설정이 다크면 자동 적용 ===== */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #000000;
+    --display-text: #ffffff;
+    --expression-text: #8e8e93;
+    --key-bg: #333333;
+    --key-text: #ffffff;
+    --func-bg: #a5a5a5;
+    --func-text: #000000;
+    --op-active-bg: #ffffff;
+    --op-active-text: #ff9500;
+    --error-text: #ff6961;
+    --shadow: none;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--display-text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Apple SD Gothic Neo",
+    "Malgun Gothic", Roboto, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  /* 더블탭 확대 방지 + 버튼 길게 눌렀을 때 글자 선택 방지 */
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ===== 계산기 전체 틀 ===== */
+.calculator {
+  width: 100%;
+  max-width: 420px;
+  height: 100%;
+  max-height: 820px;
+  display: flex;
+  flex-direction: column;
+  /* 노치·홈 바 영역을 피해서 여백 확보 */
+  padding: max(16px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right))
+    max(20px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+}
+
+/* ===== 숫자 화면 ===== */
+.display {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-end;
+  padding: 0 8px 16px;
+  min-height: 120px;
+  overflow: hidden;
+}
+
+.expression {
+  min-height: 1.5em;
+  font-size: 1.25rem;
+  color: var(--expression-text);
+  white-space: nowrap;
+}
+
+.result {
+  font-size: 4.5rem;
+  font-weight: 300;
+  line-height: 1.1;
+  white-space: nowrap;
+  max-width: 100%;
+  font-variant-numeric: tabular-nums;
+}
+
+/* 숫자가 길어지면 글자를 줄임 (app.js 에서 클래스 추가) */
+.result.medium { font-size: 3.25rem; }
+.result.small  { font-size: 2.25rem; }
+.result.tiny   { font-size: 1.6rem; }
+.result.error  { color: var(--error-text); font-size: 1.75rem; }
+
+/* ===== 버튼 영역: 4칸 격자 ===== */
+.keys {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.key {
+  aspect-ratio: 1 / 1;
+  border: none;
+  border-radius: 50%;
+  background: var(--key-bg);
+  color: var(--key-text);
+  font-size: 1.9rem;
+  font-family: inherit;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  transition: filter 0.1s, background-color 0.15s, color 0.15s;
+}
+
+.key:active,
+.key.pressed {
+  filter: brightness(1.35);
+}
+
+@media (prefers-color-scheme: light) {
+  .key:active,
+  .key.pressed {
+    filter: brightness(0.85);
+  }
+}
+
+.key:focus-visible {
+  outline: 3px solid var(--op-bg);
+  outline-offset: 2px;
+}
+
+.key.func {
+  background: var(--func-bg);
+  color: var(--func-text);
+  font-size: 1.6rem;
+}
+
+.key.op {
+  background: var(--op-bg);
+  color: var(--op-text);
+  font-size: 2.1rem;
+}
+
+/* 연산자를 누른 뒤 다음 숫자를 기다리는 중이면 강조 */
+.key.op.active {
+  background: var(--op-active-bg);
+  color: var(--op-active-text);
+}
+
+/* 0 버튼은 두 칸 차지 */
+.key.zero {
+  grid-column: span 2;
+  aspect-ratio: auto;
+  border-radius: 999px;
+  text-align: left;
+  padding-left: 12%;
+}
+
+/* 아주 작은 화면(예: 아이폰 SE)에서는 간격·글자를 조금 줄임 */
+@media (max-height: 600px) {
+  .keys { gap: 8px; }
+  .result { font-size: 3.5rem; }
+  .key { font-size: 1.5rem; }
+}

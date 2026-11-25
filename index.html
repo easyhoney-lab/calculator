@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <!-- 휴대폰 화면 너비에 맞추고, 노치(카메라 구멍) 영역까지 화면을 채움 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>계산기</title>
+  <meta name="description" content="설치해서 쓸 수 있는 간단한 계산기">
+
+  <!-- 브라우저 상단 바 색상 (라이트/다크 모드 각각) -->
+  <meta name="theme-color" content="#f2f2f7" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+  <meta name="color-scheme" content="light dark">
+
+  <!-- PWA 설정 파일. GitHub Pages 하위 폴더에서도 동작하도록 모두 ./ 상대경로 -->
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./icons/icon.svg" type="image/svg+xml">
+  <link rel="icon" href="./icons/icon-192.png" type="image/png" sizes="192x192">
+
+  <!-- 아이폰(사파리) 홈 화면 추가용 -->
+  <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="계산기">
+
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <main class="calculator">
+    <!-- 화면 영역: 위쪽은 진행 중인 식, 아래쪽은 현재 숫자 -->
+    <section class="display" aria-live="polite">
+      <div class="expression" id="expression"></div>
+      <div class="result" id="result">0</div>
+    </section>
+
+    <!-- 버튼 영역. data-* 속성으로 버튼의 역할을 구분 -->
+    <section class="keys">
+      <button class="key func" data-action="clear" aria-label="전체 지우기">C</button>
+      <button class="key func" data-action="backspace" aria-label="한 글자 지우기">⌫</button>
+      <button class="key func" data-action="negate" aria-label="부호 바꾸기">±</button>
+      <button class="key op" data-operator="/" aria-label="나누기">÷</button>
+
+      <button class="key" data-digit="7">7</button>
+      <button class="key" data-digit="8">8</button>
+      <button class="key" data-digit="9">9</button>
+      <button class="key op" data-operator="*" aria-label="곱하기">×</button>
+
+      <button class="key" data-digit="4">4</button>
+      <button class="key" data-digit="5">5</button>
+      <button class="key" data-digit="6">6</button>
+      <button class="key op" data-operator="-" aria-label="빼기">−</button>
+
+      <button class="key" data-digit="1">1</button>
+      <button class="key" data-digit="2">2</button>
+      <button class="key" data-digit="3">3</button>
+      <button class="key op" data-operator="+" aria-label="더하기">+</button>
+
+      <button class="key zero" data-digit="0">0</button>
+      <button class="key" data-action="decimal" aria-label="소수점">.</button>
+      <button class="key op equals" data-action="equals" aria-label="계산하기">=</button>
+    </section>
+  </main>
+
+  <script src="./app.js"></script>
+</body>
+</html>
