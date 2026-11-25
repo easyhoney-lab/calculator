@@ -5,7 +5,7 @@
 //   (v1 → v2) 그래야 사용자 기기에 저장된 옛 파일이 새 파일로 바뀝니다.
 // =====================================================================
 
-const CACHE_VERSION = 'v1';
+const CACHE_VERSION = 'v2';
 const CACHE_NAME = `pwa-calculator-${CACHE_VERSION}`;
 
 // 저장해 둘 파일 목록 (GitHub Pages 하위 폴더에서도 동작하도록 ./ 상대경로)
