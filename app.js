@@ -315,11 +315,41 @@ render();
 
 // ---------------------------------------------------------------------
 // 서비스 워커 등록 (오프라인 동작 + 앱 설치를 위해 필요)
+// + 새 버전 자동 적용
+//
+// 아이폰 홈 화면 앱은 닫았다 열어도 페이지를 새로 불러오지 않고
+// 멈춰 있던 화면을 그대로 이어서 보여주는 경우가 많아, 새 버전을 잘 못 받습니다.
+// 그래서 앱 화면이 다시 보일 때마다 새 버전이 있는지 직접 확인하고,
+// 새 버전이 설치되면 화면을 한 번 새로고침해서 바로 새 버전으로 실행합니다.
+// (안드로이드·PC 에서도 똑같이 동작합니다)
 // ---------------------------------------------------------------------
 if ('serviceWorker' in navigator) {
+  // 처음 설치할 때는 새로고침하지 않도록, 이미 서비스 워커가 있었는지 기억
+  const hadController = Boolean(navigator.serviceWorker.controller);
+  let reloading = false;
+
+  // 새 버전 서비스 워커가 이 화면을 넘겨받으면 → 새로고침해서 새 파일로 실행
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (!hadController || reloading) return;
+    reloading = true;
+    window.location.reload();
+  });
+
   window.addEventListener('load', () => {
     navigator.serviceWorker
       .register('./sw.js')
+      .then((registration) => {
+        const checkForUpdate = () => registration.update().catch(() => {});
+
+        // 앱으로 다시 돌아왔을 때(홈 화면에서 다시 열기, 다른 앱에서 돌아오기)
+        document.addEventListener('visibilitychange', () => {
+          if (document.visibilityState === 'visible') checkForUpdate();
+        });
+        // 아이폰 사파리가 멈춰 둔 화면을 다시 보여줄 때
+        window.addEventListener('pageshow', (event) => {
+          if (event.persisted) checkForUpdate();
+        });
+      })
       .catch((error) => console.error('서비스 워커 등록 실패:', error));
   });
 }

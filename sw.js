@@ -5,7 +5,7 @@
 //   (v1 → v2) 그래야 사용자 기기에 저장된 옛 파일이 새 파일로 바뀝니다.
 // =====================================================================
 
-const CACHE_VERSION = 'v3';
+const CACHE_VERSION = 'v4';
 const CACHE_NAME = `pwa-calculator-${CACHE_VERSION}`;
 
 // 저장해 둘 파일 목록 (GitHub Pages 하위 폴더에서도 동작하도록 ./ 상대경로)
@@ -23,10 +23,13 @@ const APP_FILES = [
 ];
 
 // 1) 설치: 파일들을 캐시에 저장
+//    cache: 'reload' → 브라우저에 남아 있는 옛 파일 말고, 서버에서 새로 받아서 저장
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then((cache) => cache.addAll(APP_FILES))
+      .then((cache) => cache.addAll(
+        APP_FILES.map((url) => new Request(url, { cache: 'reload' }))
+      ))
       .then(() => self.skipWaiting())
   );
 });
